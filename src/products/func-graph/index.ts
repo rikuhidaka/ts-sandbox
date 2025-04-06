@@ -4,19 +4,13 @@ import { logisticBasedCurve } from "../../assets/math/func/logistic-based-curve"
 import { getSamplePoint } from "../../assets/math/sample-point";
 
 export const execute = async () => {
-  generateGraph({
-    func: (x) => logisticBasedCurve(x, 0.5, 10.0),
-    fileName: "logistic-based-curve-1.png",
-  });
+  const generateK = (x: number) => -40 * x + 40;
 
-  generateGraph({
-    func: (x) => logisticBasedCurve(x, 0.5, 20.0),
-    fileName: "logistic-based-curve-2.png",
-  });
-
-  generateGraph({
-    func: (x) => logisticBasedCurve(x, 0.5, 30.0),
-    fileName: "logistic-based-curve-3.png",
+  Array.from({ length: 10 }, (_, i) => i).map((p) => {
+    generateGraph({
+      func: (x) => logisticBasedCurve(x, p / 10, generateK(p / 10)),
+      fileName: `sample-gradation-${p}.png`,
+    });
   });
 };
 

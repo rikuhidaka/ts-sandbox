@@ -11,8 +11,8 @@ const Page = () => {
         <GraphTemplate title="curveMonotoneX">
           <Graph1
             data={[
-              { data: data1, color: 'red' },
-              { data: data2, color: 'blue' },
+              { data: data1, color: '#2994FF' },
+              { data: data2, color: '#FF29DB' },
             ]}
             range={dateRange}
             options={{ curve: 'curveMonotoneX' }}
@@ -21,8 +21,8 @@ const Page = () => {
         <GraphTemplate title="curveCardinal.tension(0.8)">
           <Graph1
             data={[
-              { data: data1, color: 'red' },
-              { data: data2, color: 'blue' },
+              { data: data1, color: '#29DBFF' },
+              { data: data2, color: '#2994FF' },
             ]}
             range={dateRange}
             options={{ curve: 'curveCardinal.tension(0.8)' }}

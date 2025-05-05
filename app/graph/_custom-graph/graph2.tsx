@@ -1,7 +1,6 @@
 'use client';
 import * as d3 from 'd3';
 import { useEffect, useRef } from 'react';
-import { GraphTemplate } from './graph-template';
 
 export const Graph2 = ({
   data,
@@ -51,6 +50,37 @@ export const Graph2 = ({
     // y軸の描画
     svg.append('g').attr('transform', `translate(${marginLeft},0)`).call(d3.axisLeft(y));
 
+    // y軸のグリッド線
+    svg
+      .append('g')
+      .attr('class', 'y-grid')
+      .selectAll('line')
+      .data(y.ticks())
+      .join('line')
+      .attr('x1', marginLeft)
+      .attr('x2', width - marginRight)
+      .attr('y1', (d) => y(d))
+      .attr('y2', (d) => y(d))
+      .attr('stroke', '#ddd')
+      .attr('stroke-dasharray', '6 3'); // 点線にする
+
+    // x軸のグリッド線
+    const xTickInterval = d3.utcDay.every(1);
+    if (xTickInterval) {
+      svg
+        .append('g')
+        .attr('class', 'x-grid')
+        .selectAll('line')
+        .data(x.ticks(xTickInterval))
+        .join('line')
+        .attr('x1', (d) => x(d))
+        .attr('x2', (d) => x(d))
+        .attr('y1', marginTop)
+        .attr('y2', height - marginBottom)
+        .attr('stroke', '#eee')
+        .attr('stroke-dasharray', '6 3'); // 点線にする
+    }
+
     // 折れ線パス生成関数
     const line = d3
       .line<{ date: Date; value: number }>()
@@ -72,9 +102,5 @@ export const Graph2 = ({
     ref.current.appendChild(svg.node()!);
   }, [ref]);
 
-  return (
-    <GraphTemplate title="curveCardinal(0.8)">
-      <div ref={ref} />
-    </GraphTemplate>
-  );
+  return <div ref={ref} />;
 };

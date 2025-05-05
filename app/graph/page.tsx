@@ -1,6 +1,6 @@
 import { Box } from '@mui/material';
+import { GraphTemplate } from './_custom-graph/graph-template';
 import { Graph1 } from './_custom-graph/graph1';
-import { Graph2 } from './_custom-graph/graph2';
 import { data, dateRange } from './_custom-graph/sample-data';
 
 const Page = () => {
@@ -8,8 +8,12 @@ const Page = () => {
     <Box padding={4}>
       <Box>グラフの検証</Box>
       <Box padding={2}>
-        <Graph1 data={data} range={dateRange} />
-        <Graph2 data={data} range={dateRange} />
+        <GraphTemplate title="curveMonotoneX">
+          <Graph1 data={data} range={dateRange} options={{ curve: 'curveMonotoneX' }} />
+        </GraphTemplate>
+        <GraphTemplate title="curveCardinal.tension(0.8)">
+          <Graph1 data={data} range={dateRange} options={{ curve: 'curveCardinal.tension(0.8)' }} />
+        </GraphTemplate>
       </Box>
     </Box>
   );

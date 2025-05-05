@@ -11,7 +11,7 @@ const Page = () => {
         <GraphTemplate title="curveMonotoneX">
           <Graph1
             data={[
-              { data: data1, color: '#2994FF' },
+              { data: data1, color: '#ABFF29' },
               { data: data2, color: '#FF29DB' },
             ]}
             range={dateRange}

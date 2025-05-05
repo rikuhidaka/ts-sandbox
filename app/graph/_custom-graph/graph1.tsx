@@ -60,20 +60,42 @@ export const Graph1 = ({
           .ticks(d3.utcDay.every(1)) // 1日ごと
           .tickFormat((d) => d3.utcFormat('%-m/%-d')(d as Date)) // ラベルのフォーマット指定
       )
-      .call(g => g.selectAll('path')         // 軸線
-        .attr('stroke', axisColor))
-      .call(g => g.selectAll('line')         // 目盛り線
-        .attr('stroke', axisColor))
-      .call(g => g.selectAll('text')         // 目盛りラベル
-        .attr('fill', axisColor));
+      .call((g) =>
+        g
+          .selectAll('path') // 軸線
+          .attr('stroke', axisColor)
+      )
+      .call((g) =>
+        g
+          .selectAll('line') // 目盛り線
+          .attr('stroke', axisColor)
+      )
+      .call((g) =>
+        g
+          .selectAll('text') // 目盛りラベル
+          .attr('fill', axisColor)
+      );
 
     // y軸の描画
-    svg.append('g').attr('transform', `translate(${marginLeft},0)`).call(d3.axisLeft(y)).call(g => g.selectAll('path')         // 軸線
-      .attr('stroke', axisColor))
-      .call(g => g.selectAll('line')         // 目盛り線
-        .attr('stroke', axisColor))
-      .call(g => g.selectAll('text')         // 目盛りラベル
-        .attr('fill', axisColor));
+    svg
+      .append('g')
+      .attr('transform', `translate(${marginLeft},0)`)
+      .call(d3.axisLeft(y))
+      .call((g) =>
+        g
+          .selectAll('path') // 軸線
+          .attr('stroke', axisColor)
+      )
+      .call((g) =>
+        g
+          .selectAll('line') // 目盛り線
+          .attr('stroke', axisColor)
+      )
+      .call((g) =>
+        g
+          .selectAll('text') // 目盛りラベル
+          .attr('fill', axisColor)
+      );
 
     // y軸のグリッド線
     svg
@@ -87,7 +109,7 @@ export const Graph1 = ({
       .attr('y1', (d) => y(d))
       .attr('y2', (d) => y(d))
       .attr('stroke', axisColor)
-      .attr("opacity", 0.4) // グリッド線の透明度
+      .attr('opacity', 0.4) // グリッド線の透明度
       .attr('stroke-dasharray', '6 3'); // 点線にする
 
     // x軸のグリッド線
@@ -104,7 +126,7 @@ export const Graph1 = ({
         .attr('y1', marginTop)
         .attr('y2', height - marginBottom)
         .attr('stroke', axisColor)
-        .attr("opacity", 0.4) // グリッド線の透明度
+        .attr('opacity', 0.4) // グリッド線の透明度
         .attr('stroke-dasharray', '6 3'); // 点線にする
     }
 
@@ -122,7 +144,9 @@ export const Graph1 = ({
         .append('path')
         .datum(d.data)
         .attr('fill', `url(#line-gradient-${d.color})`) // ← グラデーションを適用
-        .attr('d', area);
+        .attr('d', area)
+        .style('display', 'none')
+        
 
       // 折れ線パス生成関数
       const line = d3
@@ -137,8 +161,14 @@ export const Graph1 = ({
         .datum(d.data)
         .attr('fill', 'none')
         .attr('stroke', d.color)
-        .attr('stroke-width', 2)
-        .attr('d', line);
+        .attr('stroke-width', 4)
+        .attr('d', line)
+        .on('mouseenter', () => {
+          d3.select(`[fill="url(#line-gradient-${d.color})"]`).style('display', 'block');
+        })
+        .on('mouseleave', () => {
+          d3.select(`[fill="url(#line-gradient-${d.color})"]`).style('display', 'none');
+        });
 
       // グラデーションの定義
       const defs = svg.append('defs');
@@ -168,5 +198,21 @@ export const Graph1 = ({
     ref.current.appendChild(svg.node()!);
   }, [ref]);
 
-  return <div ref={ref} />;
+  return (
+    <div>
+      <style>
+        {`
+          .active { 
+          }
+          .inactive-area {
+            display: none;
+          }
+          .inactive-line {
+            opacity: 0.2;
+          }
+        `}
+      </style>
+      <div ref={ref} />
+    </div>
+  );
 };

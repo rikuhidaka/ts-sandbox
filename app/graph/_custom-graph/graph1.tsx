@@ -16,7 +16,7 @@ export const Graph1 = ({
     curve: 'curveMonotoneX',
   },
 }: {
-  data: Array<{ date: Date; value: number }>;
+  data: Array<{ data: Array<{ date: Date; value: number }>; color: string }>;
   range: readonly [Date, Date];
   options?: {
     /**
@@ -93,28 +93,6 @@ export const Graph1 = ({
         .attr('stroke-dasharray', '6 3'); // 点線にする
     }
 
-    // グラデーションの定義
-    const defs = svg.append('defs');
-    const gradient = defs
-      .append('linearGradient')
-      .attr('id', 'line-gradient')
-      .attr('x1', '0%')
-      .attr('y1', '0%')
-      .attr('x2', '0%')
-      .attr('y2', '100%'); // 縦方向グラデーション
-
-    gradient
-      .append('stop')
-      .attr('offset', '0%')
-      .attr('stop-color', 'steelblue')
-      .attr('stop-opacity', 0.4);
-
-    gradient
-      .append('stop')
-      .attr('offset', '100%')
-      .attr('stop-color', 'steelblue')
-      .attr('stop-opacity', 0); // ← 下に行くほど透明に
-
     // グラフエリアを塗りつぶす
     const area = d3
       .area<{ date: Date; value: number }>()
@@ -124,27 +102,51 @@ export const Graph1 = ({
       .curve(curveFactory);
 
     // グラフエリアの塗りつぶし適用
-    svg
-      .append('path')
-      .datum(data)
-      .attr('fill', 'url(#line-gradient)') // ← グラデーションを適用
-      .attr('d', area);
+    data.map((d) => {
+      svg
+        .append('path')
+        .datum(d.data)
+        .attr('fill', `url(#line-gradient-${d.color})`) // ← グラデーションを適用
+        .attr('d', area);
 
-    // 折れ線パス生成関数
-    const line = d3
-      .line<{ date: Date; value: number }>()
-      .x((d) => x(d.date))
-      .y((d) => y(d.value))
-      .curve(curveFactory); // 曲線の形状を指定
+      // 折れ線パス生成関数
+      const line = d3
+        .line<{ date: Date; value: number }>()
+        .x((d) => x(d.date))
+        .y((d) => y(d.value))
+        .curve(curveFactory); // 曲線の形状を指定
 
-    // 折れ線描画
-    svg
-      .append('path')
-      .datum(data)
-      .attr('fill', 'none')
-      .attr('stroke', 'steelblue')
-      .attr('stroke-width', 2)
-      .attr('d', line);
+      // 折れ線描画
+      svg
+        .append('path')
+        .datum(d.data)
+        .attr('fill', 'none')
+        .attr('stroke', d.color)
+        .attr('stroke-width', 2)
+        .attr('d', line);
+
+      // グラデーションの定義
+      const defs = svg.append('defs');
+      const gradient = defs
+        .append('linearGradient')
+        .attr('id', `line-gradient-${d.color}`)
+        .attr('x1', '0%')
+        .attr('y1', '0%')
+        .attr('x2', '0%')
+        .attr('y2', '100%'); // 縦方向グラデーション
+
+      gradient
+        .append('stop')
+        .attr('offset', '0%')
+        .attr('stop-color', d.color)
+        .attr('stop-opacity', 0.4);
+
+      gradient
+        .append('stop')
+        .attr('offset', '100%')
+        .attr('stop-color', d.color)
+        .attr('stop-opacity', 0); // ← 下に行くほど透明に
+    });
 
     // refに追加してSVGを表示できるようにする
     ref.current.innerHTML = '';

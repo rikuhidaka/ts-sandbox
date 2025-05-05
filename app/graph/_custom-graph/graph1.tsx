@@ -48,6 +48,8 @@ export const Graph1 = ({
     // SVG要素の作成
     const svg = d3.create('svg').attr('width', width).attr('height', height);
 
+    const axisColor = '#3A70E2';
+
     // x軸の描画
     svg
       .append('g')
@@ -57,10 +59,21 @@ export const Graph1 = ({
           .axisBottom(x)
           .ticks(d3.utcDay.every(1)) // 1日ごと
           .tickFormat((d) => d3.utcFormat('%-m/%-d')(d as Date)) // ラベルのフォーマット指定
-      );
+      )
+      .call(g => g.selectAll('path')         // 軸線
+        .attr('stroke', axisColor))
+      .call(g => g.selectAll('line')         // 目盛り線
+        .attr('stroke', axisColor))
+      .call(g => g.selectAll('text')         // 目盛りラベル
+        .attr('fill', axisColor));
 
     // y軸の描画
-    svg.append('g').attr('transform', `translate(${marginLeft},0)`).call(d3.axisLeft(y));
+    svg.append('g').attr('transform', `translate(${marginLeft},0)`).call(d3.axisLeft(y)).call(g => g.selectAll('path')         // 軸線
+      .attr('stroke', axisColor))
+      .call(g => g.selectAll('line')         // 目盛り線
+        .attr('stroke', axisColor))
+      .call(g => g.selectAll('text')         // 目盛りラベル
+        .attr('fill', axisColor));
 
     // y軸のグリッド線
     svg
@@ -73,7 +86,8 @@ export const Graph1 = ({
       .attr('x2', width - marginRight)
       .attr('y1', (d) => y(d))
       .attr('y2', (d) => y(d))
-      .attr('stroke', '#ddd')
+      .attr('stroke', axisColor)
+      .attr("opacity", 0.4) // グリッド線の透明度
       .attr('stroke-dasharray', '6 3'); // 点線にする
 
     // x軸のグリッド線
@@ -89,7 +103,8 @@ export const Graph1 = ({
         .attr('x2', (d) => x(d))
         .attr('y1', marginTop)
         .attr('y2', height - marginBottom)
-        .attr('stroke', '#eee')
+        .attr('stroke', axisColor)
+        .attr("opacity", 0.4) // グリッド線の透明度
         .attr('stroke-dasharray', '6 3'); // 点線にする
     }
 

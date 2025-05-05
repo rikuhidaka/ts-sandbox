@@ -1,17 +1,6 @@
 {
   "compilerOptions": {
-    /* 出力先を指定 */
-    "outDir": "./dist",
-    /* ECMAScript のターゲットバージョン */
-    "target": "ES2016",
-    /* モジュールの形式 */
-    "module": "CommonJS",
-    /* Node.js で使える型定義を読み込むため */
-    "moduleResolution": "node",
-    /* 型安全性を高めたい場合は true */
-    "strict": true,
-    /* ソースマップを出力 */
-    "sourceMap": true,
+    "target": "esnext",
     "lib": [
       "dom",
       "dom.iterable",
@@ -19,21 +8,20 @@
     ],
     "allowJs": true,
     "skipLibCheck": true,
+    "strict": true,
+    "forceConsistentCasingInFileNames": true,
     "noEmit": true,
-    "incremental": true,
     "esModuleInterop": true,
+    "module": "esnext",
+    "moduleResolution": "bundler",
     "resolveJsonModule": true,
     "isolatedModules": true,
-    "jsx": "preserve",
-    "plugins": [
-      {
-        "name": "next"
-      }
-    ]
+    "jsx": "react-jsx"
   },
   "include": [
-    "src/**/*",
-    ".next/types/**/*.ts"
+    "next-env.d.ts",
+    "**/*.ts",
+    "**/*.tsx"
   ],
   "exclude": [
     "node_modules"

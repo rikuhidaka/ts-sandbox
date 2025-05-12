@@ -225,7 +225,7 @@ export const Graph1 = ({
         .append('circle')
         .attr('r', 8) // 外径
         .attr('stroke', d.color) // ドーナツの色
-        .attr('stroke-width', 4)
+        .attr('stroke-width', 3)
         .attr('fill', '#fff') // ドーナツの内側の色
         .style('pointer-events', 'none')
         .style('display', 'none');

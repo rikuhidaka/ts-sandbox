@@ -145,8 +145,7 @@ export const Graph1 = ({
         .datum(d.data)
         .attr('fill', `url(#line-gradient-${d.color})`) // ← グラデーションを適用
         .attr('d', area)
-        .style('display', 'none')
-        
+        .style('display', 'none');
 
       // 折れ線パス生成関数
       const line = d3
@@ -168,7 +167,63 @@ export const Graph1 = ({
         })
         .on('mouseleave', () => {
           d3.select(`[fill="url(#line-gradient-${d.color})"]`).style('display', 'none');
+          pointer.style('display', 'none');
+          tooltip.style('display', 'none');
+        })
+        .on('mousemove', (event) => {
+          const [mx] = d3.pointer(event);
+
+          const closest = d.data.reduce((a, b) =>
+            Math.abs(x(b.date) - mx) < Math.abs(x(a.date) - mx) ? b : a
+          );
+
+          const cx = x(closest.date);
+          const cy = y(closest.value);
+
+          pointer.attr('cx', cx).attr('cy', cy).style('display', 'block').raise();
+
+          const tooltipX =
+            cx + 10 + tooltipWidth > width - marginRight
+              ? cx - tooltipWidth - 10 // ← 右端なら左に出す
+              : cx + 10;
+
+          // ポップアップ表示（位置調整含む）
+          tooltip.attr('transform', `translate(${tooltipX}, ${cy + 10})`).style('display', 'block');
+
+          tooltipText.text(closest.value); // ← 表示内容を更新
         });
+
+      const tooltipWidth = 60;
+      const tooltipHeight = 24;
+
+      // focusされた際の表示
+      const pointer = svg
+        .append('circle')
+        .attr('r', 8) // 外径
+        .attr('stroke', d.color) // ドーナツの色
+        .attr('stroke-width', 4)
+        .attr('fill', 'white')
+        .style('display', 'none');
+
+      // ポップアップ用のグループ（非表示）
+      const tooltip = svg.append('g').style('display', 'none');
+
+      tooltip
+        .append('rect')
+        .attr('fill', 'white')
+        .attr('fill-opacity', 0.8)
+        .attr('stroke', '#aaa')
+        .attr('rx', 4)
+        .attr('ry', 4)
+        .attr('width', tooltipWidth)
+        .attr('height', tooltipHeight);
+
+      const tooltipText = tooltip
+        .append('text')
+        .attr('x', 5)
+        .attr('y', 16)
+        .attr('font-size', '12px')
+        .attr('fill', '#333');
 
       // グラデーションの定義
       const defs = svg.append('defs');

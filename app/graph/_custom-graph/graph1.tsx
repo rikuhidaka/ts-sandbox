@@ -1,5 +1,6 @@
 'use client';
 import * as d3 from 'd3';
+import { utcFormat } from 'd3';
 import { useEffect, useRef } from 'react';
 
 const width = 640;
@@ -207,11 +208,17 @@ export const Graph1 = ({
             .style('display', 'block')
             .raise();
 
-          tooltipText.text(closest.value); // ← 表示内容を更新
+          tooltipText
+            .selectAll('tspan')
+            .data([utcFormat('%Y/%m/%d')(closest.date), closest.value])
+            .join('tspan')
+            .attr('x', 5)
+            .attr('dy', (d, i) => (i === 0 ? '0' : '1.8em'))
+            .text((d) => d); // ← 表示内容を更新
         });
 
-      const tooltipWidth = 60;
-      const tooltipHeight = 24;
+      const tooltipWidth = 90;
+      const tooltipHeight = 48;
 
       // focusされた際の表示
       const pointer = svg

@@ -138,6 +138,11 @@ export const Graph1 = ({
       .y1((d) => y(d.value))
       .curve(curveFactory);
 
+    const lineMap: Record<
+      string,
+      d3.Selection<SVGPathElement, { date: Date; value: number }[], null, undefined>
+    > = {};
+
     // グラフエリアの塗りつぶし適用
     data.map((d) => {
       svg
@@ -155,7 +160,7 @@ export const Graph1 = ({
         .curve(curveFactory); // 曲線の形状を指定
 
       // 折れ線描画
-      svg
+      const lineSvg = svg
         .append('path')
         .datum(d.data)
         .attr('fill', 'none')
@@ -164,21 +169,39 @@ export const Graph1 = ({
         .attr('d', line)
         .on('mouseenter', () => {
           d3.select(`[fill="url(#line-gradient-${d.color})"]`).style('display', 'block');
+          console.log('mousemove', d.color);
         })
         .on('mouseleave', () => {
           d3.select(`[fill="url(#line-gradient-${d.color})"]`).style('display', 'none');
           pointer.style('display', 'none');
           tooltip.style('display', 'none');
+          data.forEach((series) => lineMap[series.color].attr('opacity', 1));
+
+          console.log('mouseleave', d.color);
         })
         .on('mousemove', (event) => {
+          console.log('mousemove', d.color);
+
+          data.forEach((series) => {
+            if (series.color === d.color) {
+              lineMap[series.color].attr('opacity', 1);
+              lineMap[series.color].raise();
+            } else {
+              lineMap[series.color].attr('opacity', 0.4);
+            }
+          });
+
           const [mx] = d3.pointer(event);
 
           const closest = d.data.reduce((a, b) =>
             Math.abs(x(b.date) - mx) < Math.abs(x(a.date) - mx) ? b : a
           );
+          console.log(closest);
 
           const cx = x(closest.date);
           const cy = y(closest.value);
+
+          console.log(cx, cy);
 
           pointer.attr('cx', cx).attr('cy', cy).style('display', 'block').raise();
 
@@ -188,7 +211,10 @@ export const Graph1 = ({
               : cx + 10;
 
           // ポップアップ表示（位置調整含む）
-          tooltip.attr('transform', `translate(${tooltipX}, ${cy + 10})`).style('display', 'block');
+          tooltip
+            .attr('transform', `translate(${tooltipX}, ${cy + 10})`)
+            .style('display', 'block')
+            .raise();
 
           tooltipText.text(closest.value); // ← 表示内容を更新
         });
@@ -203,10 +229,11 @@ export const Graph1 = ({
         .attr('stroke', d.color) // ドーナツの色
         .attr('stroke-width', 4)
         .attr('fill', 'white')
+        .style('pointer-events', 'none')
         .style('display', 'none');
 
       // ポップアップ用のグループ（非表示）
-      const tooltip = svg.append('g').style('display', 'none');
+      const tooltip = svg.append('g').style('display', 'none').style('pointer-events', 'none');
 
       tooltip
         .append('rect')
@@ -246,6 +273,8 @@ export const Graph1 = ({
         .attr('offset', '100%')
         .attr('stop-color', d.color)
         .attr('stop-opacity', 0); // ← 下に行くほど透明に
+
+      lineMap[d.color] = lineSvg;
     });
 
     // refに追加してSVGを表示できるようにする

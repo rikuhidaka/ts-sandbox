@@ -274,18 +274,6 @@ export const Graph1 = ({
 
   return (
     <div>
-      <style>
-        {`
-          .active { 
-          }
-          .inactive-area {
-            display: none;
-          }
-          .inactive-line {
-            opacity: 0.2;
-          }
-        `}
-      </style>
       <div ref={ref} />
     </div>
   );

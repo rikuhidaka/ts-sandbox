@@ -169,19 +169,14 @@ export const Graph1 = ({
         .attr('d', line)
         .on('mouseenter', () => {
           d3.select(`[fill="url(#line-gradient-${d.color})"]`).style('display', 'block');
-          console.log('mousemove', d.color);
         })
         .on('mouseleave', () => {
           d3.select(`[fill="url(#line-gradient-${d.color})"]`).style('display', 'none');
           pointer.style('display', 'none');
           tooltip.style('display', 'none');
           data.forEach((series) => lineMap[series.color].attr('opacity', 1));
-
-          console.log('mouseleave', d.color);
         })
         .on('mousemove', (event) => {
-          console.log('mousemove', d.color);
-
           data.forEach((series) => {
             if (series.color === d.color) {
               lineMap[series.color].attr('opacity', 1);
@@ -196,12 +191,8 @@ export const Graph1 = ({
           const closest = d.data.reduce((a, b) =>
             Math.abs(x(b.date) - mx) < Math.abs(x(a.date) - mx) ? b : a
           );
-          console.log(closest);
-
           const cx = x(closest.date);
           const cy = y(closest.value);
-
-          console.log(cx, cy);
 
           pointer.attr('cx', cx).attr('cy', cy).style('display', 'block').raise();
 

@@ -236,7 +236,7 @@ export const Graph1 = ({
       tooltip
         .append('rect')
         .attr('fill', '#fff')
-        .attr('fill-opacity', 0.8)
+        .attr('fill-opacity', 0.75)
         .attr('rx', 4)
         .attr('ry', 4)
         .attr('width', tooltipWidth)

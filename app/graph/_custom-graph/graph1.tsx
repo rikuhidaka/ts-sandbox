@@ -219,7 +219,7 @@ export const Graph1 = ({
         .attr('r', 8) // 外径
         .attr('stroke', d.color) // ドーナツの色
         .attr('stroke-width', 4)
-        .attr('fill', 'white')
+        .attr('fill', '#fff') // ドーナツの内側の色
         .style('pointer-events', 'none')
         .style('display', 'none');
 
@@ -228,9 +228,8 @@ export const Graph1 = ({
 
       tooltip
         .append('rect')
-        .attr('fill', 'white')
+        .attr('fill', '#fff')
         .attr('fill-opacity', 0.8)
-        .attr('stroke', '#aaa')
         .attr('rx', 4)
         .attr('ry', 4)
         .attr('width', tooltipWidth)
